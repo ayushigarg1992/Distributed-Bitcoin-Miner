@@ -9,7 +9,7 @@ defmodule Dos do
     end
     #to append gatorid to hash a string
     def hashingDiff(k) do
-      stringToHash = string_of_length(5)
+      stringToHash  = string_of_length(5)
       hash = :crypto.hash(:sha256,"ayushigarg1992;"<> stringToHash)|>Base.encode16|> IO.puts
       #match(k,hash)
 
@@ -26,11 +26,16 @@ defmodule Dos do
       pattern(k)
     end
     def checkValueOf(match,k) do
-      if match==String.slice(hashing(string_of_length(5)),0,k) do
-        IO.puts "true" <> "#{match}"
+      slice = String.slice(hashing(string_of_length(5)),0,k)
+      if match==slice
+      do
+        IO.puts "true-" <>"#{match}"<>"- "<>"#{slice}"<> "#{String.slice(hashing(string_of_length(5)),0,k)}"
+      
+      else
+        
       end
     end
-    def hash_str(strs) do
+      def hash_str(strs) do
       Enum.each strs, fn str ->" #{:crypto.hash(:sha256,"ayushigarg1992"<> str)|>Base.encode16}" |> IO.puts
       
       end

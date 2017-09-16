@@ -9,7 +9,7 @@ defmodule StringGenerator do
       end
     
       def hash_str(str) do
-        hash = fn(str)-> :crypto.hash(:sha256,str)|>Base.encode16
+        :crypto.hash(:sha256,str)|>Base.encode16
       end
-  end
+  
 end
