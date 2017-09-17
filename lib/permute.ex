@@ -6,8 +6,8 @@ defmodule Permutations do
   def shuffle(list, i) do
     for x <- list, y <- shuffle(list, i-1), do: [x|y]
   end
-  def joins do
-      Enum.each(shuffle([1,2,3]),fn(x)->Enum.join(x,"")|>IO.puts end)#|>Enum.join("")
+  def joins(allist) do
+      Enum.each(shuffle(allist),fn(x)->Enum.join(x,"") end)
   end
 
 end

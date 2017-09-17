@@ -4,11 +4,12 @@ defmodule Server do
         {:ok, _} = Node.start(:"serverBoss@192.168.0.13")
         cookie = Application.get_env(self(), :cookie)
         Node.set_cookie(cookie)
-        GenServer.start_link(__MODULE__,name: ServerBoss)
+        GenServer.start_link(__MODULE__,:ok,name: Server)
+        :global.sync()
         spawner(k)
     end
     def workers(node_name,k) do
-        GenServer.cast({Worker1, :"#{node_name}"},{:name,k}) 
+        GenServer.cast({Worker1, :"#{node_name}"},{:param,k}) 
         
     end
     def spawner(k) do
@@ -39,7 +40,7 @@ defmodule Server do
     end
     def handle_cast({:receivehash, hashed}, state) do
         
-        IO.puts  "worker1"<>"#{hashed}"
+        IO.puts  "worker1 #{hashed}"
         {:noreply,state}
     end
 

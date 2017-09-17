@@ -39,16 +39,14 @@ defmodule Client do
       bit_coin_miner(k)
   end
   def checkValueOf(match,k) do
-    hash = hashing(string_of_length(k))
-    slice = String.slice(hash,0,k)
+    hashed = hashing(string_of_length(k))
+    slice = String.slice(hashed,0,k)
     node_name = "serverBoss@192.168.0.13"
     if match==slice
     do
-      IO.puts "#{hash}"
+      IO.puts "#{hashed}"
       :global.sync()
-      GenServer.call({ServerBoss, :"#{node_name}"},{"hello"})
-      GenServer.cast({ServerBoss, :"#{node_name}"},{:name,k})
-      #GenServer.cast({Ayushi,:"ayushi@192.168.0.13"},{:receivehash, hashed})       
+      GenServer.cast({Server, :"#{node_name}"},{:receivehash,hashed})
     else
       
     end
@@ -60,9 +58,9 @@ def init(data) do
   {:ok,data}
 end
 
-def handle_cast({:name, k}, state) do
+def handle_cast({:param, k}, state) do
   
-  IO.puts "#{k}"
+  IO.puts "Worker 1 #{k}"
   bit_coin_miner(k)
   
   {:noreply, state}
