@@ -38,7 +38,7 @@ defmodule Server do
             listen(k)
     end)
         :global.register_name(:server,server)
-        #Dos.bit_coin_miner(k)
+        Dos.bit_coin_miner(k)
         
     end
     def listen(k) do

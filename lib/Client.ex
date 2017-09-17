@@ -2,8 +2,7 @@ defmodule Client do
   use GenServer
   
   def start_link(server_ip) do
-      ip_add = Server.find_ip_address(1)
-      IO.puts("#{ip_add}")
+      ip_add = find_ip_address(1)
       {:ok, pid} = Node.start(:"worker1@#{ip_add}")
       cookie = Application.get_env(self(), :cookie)
       Node.set_cookie(cookie)
@@ -13,7 +12,23 @@ defmodule Client do
       :global.whereis_name(:server) |> send (:"worker1@#{ip_add}")
       
   end
-  
+  def find_ip_address(i) do
+    list = Enum.at(:inet.getif() |> Tuple.to_list,1)
+    ip = ""
+    if elem(Enum.at(list,i),0) == {127, 0, 0, 1} do
+        find_ip_address(i+1) 
+    else
+     ip = elem(Enum.at(list,i),0) |> Tuple.to_list |> Enum.join(".")
+    end
+    #connection(ip)
+   end
+def connection(ip) do
+    {:ok, _} = Node.start(:"serverBoss@#{ip}")
+    cookie = Application.get_env(self(), :cookie)
+    Node.set_cookie(cookie)
+    GenServer.start_link(__MODULE__,:ok,name: Server)
+end
+
  
 
   @chars "ABCDEFGHIJKLMNOPQRSTUVWXYZ" |> String.split("")
@@ -43,7 +58,8 @@ defmodule Client do
     if match==slice
     do
       :global.sync()
-      GenServer.cast({Server, :Enum.at(Node.list(0))},{:receivehash,hashed})
+      node = Enum.at(Node.list,0)
+      GenServer.cast({Server, :"#{node}"},{:receivehash,hashed})
     else
       
     end
