@@ -18,26 +18,23 @@ defmodule Dos do
       :crypto.hash(:sha256,"ayushigarg1992;"<> str)|>Base.encode16
     end
     #to make a pattern leading zeros
-    def pattern(k) do
-      matcher = Enum.reduce((1..k), [], fn (_i, acc) ->
+    def bit_coin_miner(k) do
+      Enum.reduce((1..k), [], fn (_i, acc) ->
           [0 | acc]
         end) |> Enum.join("")|>checkValueOf(k)
-        #IO.puts matcher
-      pattern(k)
+        bit_coin_miner(k)
     end
     def checkValueOf(match,k) do
-      slice = String.slice(hashing(string_of_length(5)),0,k)
+      hash = hashing(string_of_length(3))
+      slice = String.slice(hash,0,k)
       if match==slice
       do
-        IO.puts "true-" <>"#{match}"<>"- "<>"#{slice}"<> "#{String.slice(hashing(string_of_length(5)),0,k)}"
+        IO.puts "#{hash}"
       
       else
         
       end
     end
-      def hash_str(strs) do
-      Enum.each strs, fn str ->" #{:crypto.hash(:sha256,"ayushigarg1992"<> str)|>Base.encode16}" |> IO.puts
       
-      end
-    end
+    
 end

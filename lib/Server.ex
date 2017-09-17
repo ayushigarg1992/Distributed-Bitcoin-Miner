@@ -1,34 +1,37 @@
 defmodule Server do
     use GenServer
-    def start_link do
+    def start_link(k) do
         {:ok, _} = Node.start(:"ayushi@192.168.0.13")
         cookie = Application.get_env(self(), :cookie)
         Node.set_cookie(cookie)
-        Node.connect(:"pooja@192.168.0.20")
+        #Node.connect(:"pooja@192.168.0.20")
+        spawner(k)
+        GenServer.start_link(__MODULE__,name: Ayushi)
+    end
+    def workers(k) do
+        node_name= "#{k}"
+        GenServer.cast({Pooja, :"#{node_name}"},{:name,3}) 
+    end
+    def spawner(k) do
+        # spawn children
         server = spawn (fn-> 
             receive do 
-                msg->IO.puts "I got something #{inspect msg}"
-            end
-        end)
-        
+                #msg->IO.puts
+               msg->workers(msg)|>IO.puts
+        end
+    end)
         :global.register_name(:server,server)
-        GenServer.start_link(__MODULE__,:ok,name: Ayushi)
+        Dos.bit_coin_miner(5)
+        #spawner(k)
     end
-    def workers(pid,k) do
-        GenServer.cast(pid,k)
-    end
-
     def init(data) do
         {:ok,data}
     end
-    def see(pid) do
-        GenServer.call(pid,:see)
+    
+    def handle_cast({:item, k}, state) do
+        IO.puts "From Pooja "<>"#{k}"
+        {:item,state}
     end
-    def handle_cast(item,list) do
-        list_ = [item|list]
-        {:noreply,list_}
-    end
-    def handle_call(:see,_from,list) do
-        {:reply,list,list}
-    end
+
+    
 end
