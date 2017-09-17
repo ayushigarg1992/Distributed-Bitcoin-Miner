@@ -1,7 +1,7 @@
 defmodule Client do
   use GenServer
   def start_link do
-      ip_add = find_ip_address(1)
+      ip_add = Server.find_ip_address(1)
       IO.puts("#{ip_add}")
       {:ok, pid} = Node.start(:"worker1@ip_add")
       cookie = Application.get_env(self(), :cookie)
@@ -13,15 +13,6 @@ defmodule Client do
       
   end
 
-  def find_ip_address(i) do
-    list = Enum.at(:inet.getif() |> Tuple.to_list,1)
-    ip = ""
-    if elem(Enum.at(list,i),0) == {127, 0, 0, 1} do
-     find_ip(i+1) 
-    else
-     ip = elem(Enum.at(list,i),0) |> Tuple.to_list |> Enum.join(".")
-    end
-   end
   
  
 
