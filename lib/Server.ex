@@ -1,15 +1,14 @@
 defmodule Server do
     use GenServer
     def start_link(k) do
-        {:ok, _} = Node.start(:"ayushi@192.168.0.13")
+        {:ok, _} = Node.start(:"serverBoss@192.168.0.13")
         cookie = Application.get_env(self(), :cookie)
         Node.set_cookie(cookie)
-        GenServer.start_link(__MODULE__,name: Ayushi)
+        GenServer.start_link(__MODULE__,name: ServerBoss)
         spawner(k)
     end
-    def workers(msg,k) do
-        node_name= "#{msg}"
-        GenServer.cast({Pooja, :"#{node_name}"},{:name,k}) 
+    def workers(node_name,k) do
+        GenServer.cast({Worker1, :"#{node_name}"},{:name,k}) 
         
     end
     def spawner(k) do
@@ -17,9 +16,8 @@ defmodule Server do
         server = spawn (fn-> 
             listen(k)
     end)
-        :global.register_name(:server,server)|>IO.puts
-        IO.puts "one"
-        Dos.bit_coin_miner(k)
+        :global.register_name(:server,server)
+        #Dos.bit_coin_miner(k)
         
     end
     def listen(k) do
@@ -32,9 +30,16 @@ defmodule Server do
         {:ok,data}
     end
     
-    def handle_cast({:item, hash,slice}, state) do
+    def handle_info(hash,state) do
+        IO.inspect "Worker 1: #{hash}"
+        {:noreply,state}
+    end
+    def handle_call(:see,_from,msg) do
+        {:reply,msg,msg}
+    end
+    def handle_cast({:receivehash, hashed}, state) do
         
-        IO.puts  "worker1"<>"#{hash}"<>" #{slice}"
+        IO.puts  "worker1"<>"#{hashed}"
         {:noreply,state}
     end
 
