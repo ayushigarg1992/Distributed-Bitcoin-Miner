@@ -4,15 +4,11 @@ defmodule Server do
         
         ip=find_ip_address(1)
         :global.sync()
-        spawner(k,ip)
+        spawner(k)
     end
-    def workers(node_name,k,ip) do
-<<<<<<< HEAD
-        
-=======
-        ip = "192.168.0.13"
->>>>>>> b0e750441b53d3886e2dda7a7fb91bd98e9174af
-        GenServer.cast({Worker1, :"#{node_name}"},{:param,k,ip}) 
+    def workers(node_name,k) do
+        #ip = "192.168.0.13"
+        GenServer.cast({Worker1, :"#{node_name}"},{:param,k}) 
         
     end
 
@@ -36,20 +32,20 @@ defmodule Server do
     def init(data) do
         {:ok,data}
     end
-    def spawner(k,ip) do
+    def spawner(k) do
         # spawn children
         server = spawn (fn-> 
-            listen(k,ip)
+            listen(k)
     end)
         :global.register_name(:server,server)
         #Dos.bit_coin_miner(k)
         
     end
-    def listen(k,ip) do
+    def listen(k) do
         receive do 
-            msg->workers(msg,k,ip)|>IO.puts
+            msg->workers(msg,k)|>IO.puts
         end
-        listen(k,ip)
+        listen(k)
     end
     def init(data) do
         {:ok,data}
