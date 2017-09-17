@@ -7,7 +7,11 @@ defmodule Server do
         spawner(k,ip)
     end
     def workers(node_name,k,ip) do
+<<<<<<< HEAD
         
+=======
+        ip = "192.168.0.13"
+>>>>>>> b0e750441b53d3886e2dda7a7fb91bd98e9174af
         GenServer.cast({Worker1, :"#{node_name}"},{:param,k,ip}) 
         
     end
