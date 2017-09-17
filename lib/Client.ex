@@ -57,7 +57,7 @@ end
 
 def handle_cast({:param, k}, state) do
   
-  IO.puts "Worker 1 #{k}"
+  
   bit_coin_miner(k)
   
   {:noreply, state}
