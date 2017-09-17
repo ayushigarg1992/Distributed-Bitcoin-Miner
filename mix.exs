@@ -5,6 +5,7 @@ defmodule Dos.Mixfile do
     [
       app: :dos,
       version: "0.1.0",
+      escript: "escript",
       elixir: "~> 1.5",
       start_permanent: Mix.env == :prod,
       deps: deps()
