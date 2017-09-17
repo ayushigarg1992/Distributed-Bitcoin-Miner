@@ -4,7 +4,7 @@ defmodule Client do
       {:ok, pid} = Node.start(:"worker1@192.168.0.13")
       cookie = Application.get_env(self(), :cookie)
       Node.set_cookie(cookie)
-      Node.connect(:"serverBoss@192.168.0.13") |> IO.puts
+      Node.connect(:"serverBoss@192.168.0.13")
       GenServer.start_link(__MODULE__,:ok,name: Worker1)
       :global.sync()
       :global.whereis_name(:server) |> send (:"worker1@192.168.0.13")
@@ -21,13 +21,8 @@ defmodule Client do
     end) |> Enum.join("")
     
   end
-  #to append gatorid to hash a string
-  def hashingDiff(k) do
-    stringToHash  = string_of_length(5)
-    hash = :crypto.hash(:sha256,"ayushigarg1992;"<> stringToHash)|>Base.encode16|> IO.puts
-    #match(k,hash)
-
-  end
+  
+  
   def hashing(str) do
     :crypto.hash(:sha256,"ayushigarg1992;"<> str)|>Base.encode16
   end
@@ -44,7 +39,6 @@ defmodule Client do
     node_name = "serverBoss@192.168.0.13"
     if match==slice
     do
-      IO.puts "#{hashed}"
       :global.sync()
       GenServer.cast({Server, :"#{node_name}"},{:receivehash,hashed})
     else
