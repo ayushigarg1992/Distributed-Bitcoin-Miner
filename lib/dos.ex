@@ -1,36 +1,33 @@
 defmodule Dos do
-  @chars "ABCDEFGHIJKLMNOPQRSTUVWXYZ" |> String.split("")
-    #random string generator
-    def string_of_length(length) do
-     # num = String.to_integer(length)
-      Enum.reduce((1..length), [], fn (_i, acc) ->
-        [Enum.random(@chars) | acc]
-      end) |> Enum.join("")
-      
-    end
-    def hashing(str) do
-      :crypto.hash(:sha256,"ayushigarg1992;"<> str)|>Base.encode16
-    end
-    #to make a pattern leading zeros
-    def bit_coin_miner(k) do
-      
-      #num = String.to_integer(k)
-      Enum.reduce((1..k), [], fn (_i, acc) ->
-          [0 | acc]
-        end) |> Enum.join("")|>checkValueOf(k)
-        bit_coin_miner(k)
-    end
-    def checkValueOf(match,k) do
-      hash = hashing(string_of_length(k))
-      slice = String.slice(hash,0,k)
-      if match==slice
-      do
-        IO.puts "My coins: "<>"#{hash}"
-      
-      else
-        
+  
+  def repeat do
+      receive do
+          {input, k} -> check_string{input, k}
       end
-    end
+  end
+
+  def check_string{input, k} do
+      hash = Base.encode16(:crypto.hash(:sha256, input))
+      # num = String.to_integer(k)
+      leading_zeros = String.slice(hash, 0..k-1)
+      ch = String.to_charlist(leading_zeros)
+      temp = Enum.all?(ch, fn(x) -> x == 48 end)
+      if temp == true do
+        IO.puts "My coins: "<>"#{hash}"
+      end
+  end
+
+
+  def looping(k) do
+      pids = Enum.map(1..100, fn (_) -> spawn(&Dos.repeat/0) end)
+      Enum.each pids, fn pid ->
+          rand = :crypto.strong_rand_bytes(6) |> Base.encode64 |> binary_part(0,6)
+          input = Enum.join(["ayushigarg1992", rand], ";")
+          send(pid, {input, k})
+          
+      end
+      looping(k)
+  end
       
     
 end

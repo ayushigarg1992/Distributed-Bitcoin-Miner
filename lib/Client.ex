@@ -3,9 +3,11 @@ defmodule Client do
   
   def start_link(server_ip) do
       ip_add = find_ip_address(1)
+
       {:ok, pid} = Node.start(:"worker1@#{ip_add}")
       cookie = Application.get_env(self(), :cookie)
       Node.set_cookie(cookie)
+      :global.sync()
       Node.connect(:"serverBoss@#{server_ip}")
       GenServer.start_link(__MODULE__,:ok,name: Worker1)
       :global.sync()
@@ -52,19 +54,22 @@ end
       bit_coin_miner(k)
   end
   def checkValueOf(match,k) do
-    hash = hashing(string_of_length(k))
-    slice = String.slice(hash,0,k)
-    hashed = "Worker1 #{hash}"
+    
+    IO.puts "All good so far"
+    
+    hashed = hashing(string_of_length(k))
+    slice = String.slice(hashed,0,k)
+    node_name = Enum.at(Node.list,0)
+    IO.puts "#{node_name} is fine"
+    IO.puts "All good so far"
     if match==slice
     do
-      :global.sync()
-      node = Enum.at(Node.list,0)
-      
-      GenServer.cast({Server, :"#{node}"},{:receivehash,hashed})
+      IO.puts "#{hashed}"
+      GenServer.cast({Server, :"#{node_name}"},{:receivehash,hashed})
     else
       
     end
-  end  
+  end 
 
 
 ##server side codes
@@ -74,7 +79,7 @@ end
 
 def handle_cast({:param, k}, state) do
   
-  
+  IO.puts "Worker 1 says #{k}"
   bit_coin_miner(k)
   
   {:noreply, state}

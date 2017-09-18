@@ -1,14 +1,15 @@
 defmodule Project1 do
     use GenServer
     def main(args) do
-        #IO.puts is_integer(hd(args))
         if Regex.match?(~r/\./,to_string(args)) do
             Client.start_link(Enum.at(args,0))
+            IO.puts args
         else
             {num,_} = Integer.parse(Enum.at(args,0))
+            start_link(num)
         end
         
-        start_link(num)
+        
     end
     def start_link(k) do
         
@@ -17,7 +18,7 @@ defmodule Project1 do
         spawner(k)
     end
     def workers(node_name,k) do
-        #ip = "192.168.0.13"
+        IO.puts "node name is #{node_name} and parameter is #{k}"
         GenServer.cast({Worker1, :"#{node_name}"},{:param,k}) 
         
     end
@@ -43,35 +44,33 @@ defmodule Project1 do
         {:ok,data}
     end
     def spawner(k) do
-        # spawn children
         server = spawn (fn-> 
             listen(k)
         end)
-        IO.inspect server
+        :global.sync()
         :global.register_name(:server,server)
-        Dos.bit_coin_miner(k)
+        Dos.looping(k)
         
     end
     def listen(k) do
         receive do 
-            msg->workers(msg,k)|>IO.puts
+            msg->workers(msg,k) 
         end
         listen(k)
     end
-    def init(data) do
-        {:ok,data}
+    def init(set) do
+        {:ok,set}
     end
     
-    def handle_info(hash,state) do
-        IO.inspect "Worker 1: #{hash}"
-        {:noreply,state}
-    end
-    def handle_call(:see,_from,msg) do
-        {:reply,msg,msg}
-    end
+    # def view(node_name) do
+    #     GenServer.call({Server, :"#{node_name}"},:view)
+    # end
+    # def handle_call(:view,_from,set) do
+    #     {:reply,set,set}
+    # end
     def handle_cast({:receivehash, hashed}, state) do
         
-        IO.puts  "#{hashed}"
+        IO.puts  "worker1 #{hashed}"
         {:noreply,state}
     end
 
