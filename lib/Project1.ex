@@ -1,14 +1,20 @@
 defmodule Project1 do
     use GenServer
     def main(args) do
-        if Regex.match?(~r/\./,to_string(args)) do
+        args|>parse
+        receive do
+            {:end} -> IO.puts "End"
+          end     
+               
+    end
+    def parse(args) do
+            if Regex.match?(~r/\./,to_string(args)) do
             Client.start_link(Enum.at(args,0))
             IO.puts args
-        else
+            else
             {num,_} = Integer.parse(Enum.at(args,0))
             start_link(num)
-        end
-        
+            end
         
     end
     def start_link(k) do

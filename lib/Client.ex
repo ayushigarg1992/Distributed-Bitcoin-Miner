@@ -4,14 +4,14 @@ defmodule Client do
   def start_link(server_ip) do
       ip_add = find_ip_address(1)
 
-      {:ok, pid} = Node.start(:"worker1@#{ip_add}")
+      {:ok, pid} = Node.start(:"worker2@#{ip_add}")
       cookie = Application.get_env(self(), :cookie)
       Node.set_cookie(cookie)
       :global.sync()
       Node.connect(:"serverBoss@#{server_ip}")
       GenServer.start_link(__MODULE__,:ok,name: Worker1)
       :global.sync()
-      :global.whereis_name(:server) |> send (:"worker1@#{ip_add}")
+      :global.whereis_name(:server) |> send (:"worker2@#{ip_add}")
       
   end
   def find_ip_address(i) do
@@ -55,13 +55,11 @@ end
   end
   def checkValueOf(match,k) do
     
-    IO.puts "All good so far"
-    
+ 
     hashed = hashing(string_of_length(k))
     slice = String.slice(hashed,0,k)
     node_name = Enum.at(Node.list,0)
-    IO.puts "#{node_name} is fine"
-    IO.puts "All good so far"
+    
     if match==slice
     do
       IO.puts "#{hashed}"
