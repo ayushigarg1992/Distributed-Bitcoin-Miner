@@ -1,13 +1,13 @@
-defmodule Client do
+defmodule Client2 do
   use GenServer
   
   def start_link(server_ip) do
       ip_add = find_ip_address(1)
-      {:ok, pid} = Node.start(:"worker1@#{ip_add}")
+      {:ok, pid} = Node.start(:"worker3@#{ip_add}")
       cookie = Application.get_env(self(), :cookie)
       Node.set_cookie(cookie)
       Node.connect(:"serverBoss@#{server_ip}")
-      GenServer.start_link(__MODULE__,:ok,name: Worker1)
+      GenServer.start_link(__MODULE__,:ok,name: Worker3)
       :global.sync()
       :global.whereis_name(:server) |> send (:"worker1@#{ip_add}")
       
@@ -54,12 +54,11 @@ end
   def checkValueOf(match,k) do
     hash = hashing(string_of_length(k))
     slice = String.slice(hash,0,k)
-    hashed = "Worker1 #{hash}"
+    hashed = "Worker3 #{hash}"
     if match==slice
     do
       :global.sync()
       node = Enum.at(Node.list,0)
-      
       GenServer.cast({Server, :"#{node}"},{:receivehash,hashed})
     else
       

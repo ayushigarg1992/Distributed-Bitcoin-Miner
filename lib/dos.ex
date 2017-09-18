@@ -2,6 +2,7 @@ defmodule Dos do
   @chars "ABCDEFGHIJKLMNOPQRSTUVWXYZ" |> String.split("")
     #random string generator
     def string_of_length(length) do
+     # num = String.to_integer(length)
       Enum.reduce((1..length), [], fn (_i, acc) ->
         [Enum.random(@chars) | acc]
       end) |> Enum.join("")
@@ -12,6 +13,8 @@ defmodule Dos do
     end
     #to make a pattern leading zeros
     def bit_coin_miner(k) do
+      
+      #num = String.to_integer(k)
       Enum.reduce((1..k), [], fn (_i, acc) ->
           [0 | acc]
         end) |> Enum.join("")|>checkValueOf(k)

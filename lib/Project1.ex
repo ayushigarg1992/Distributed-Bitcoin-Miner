@@ -1,5 +1,15 @@
-defmodule Server do
+defmodule Project1 do
     use GenServer
+    def main(args) do
+        #IO.puts is_integer(hd(args))
+        if Regex.match?(~r/\./,to_string(args)) do
+            Client.start_link(Enum.at(args,0))
+        else
+            {num,_} = Integer.parse(Enum.at(args,0))
+        end
+        
+        start_link(num)
+    end
     def start_link(k) do
         
         ip=find_ip_address(1)
@@ -36,7 +46,8 @@ defmodule Server do
         # spawn children
         server = spawn (fn-> 
             listen(k)
-    end)
+        end)
+        IO.inspect server
         :global.register_name(:server,server)
         Dos.bit_coin_miner(k)
         
@@ -60,7 +71,7 @@ defmodule Server do
     end
     def handle_cast({:receivehash, hashed}, state) do
         
-        IO.puts  "worker1 #{hashed}"
+        IO.puts  "#{hashed}"
         {:noreply,state}
     end
 
