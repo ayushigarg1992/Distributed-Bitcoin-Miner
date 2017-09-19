@@ -19,7 +19,7 @@ defmodule Project1 do
     end
     def start_link(k) do
         
-        ip=find_ip_address(1)
+        ip=find_ip_address(0)
         :global.sync()
         spawner(k)
     end
@@ -74,9 +74,9 @@ defmodule Project1 do
     # def handle_call(:view,_from,set) do
     #     {:reply,set,set}
     # end
-    def handle_cast({:receivehash, hashed}, state) do
+    def handle_cast({:receivehash, hashed, random}, state) do
         
-        IO.puts  "worker1 #{hashed}"
+        IO.puts  "ayushigarg1992;#{random}     #{hashed}"
         {:noreply,state}
     end
 

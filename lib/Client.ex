@@ -2,7 +2,7 @@ defmodule Client do
   use GenServer
   
   def start_link(server_ip) do
-      ip_add = find_ip_address(1)
+      ip_add = find_ip_address(0)
 
       {:ok, pid} = Node.start(:"worker2@#{ip_add}")
       cookie = Application.get_env(self(), :cookie)
@@ -22,7 +22,6 @@ defmodule Client do
     else
      ip = elem(Enum.at(list,i),0) |> Tuple.to_list |> Enum.join(".")
     end
-    #connection(ip)
    end
 def connection(ip) do
     {:ok, _} = Node.start(:"serverBoss@#{ip}")
@@ -55,15 +54,15 @@ end
   end
   def checkValueOf(match,k) do
     
- 
-    hashed = hashing(string_of_length(k))
+    random = (string_of_length(k))
+    hashed = hashing(random)
     slice = String.slice(hashed,0,k)
     node_name = Enum.at(Node.list,0)
     
     if match==slice
     do
       IO.puts "#{hashed}"
-      GenServer.cast({Server, :"#{node_name}"},{:receivehash,hashed})
+      GenServer.cast({Server, :"#{node_name}"},{:receivehash,hashed, random})
     else
       
     end

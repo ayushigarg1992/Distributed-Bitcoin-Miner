@@ -13,7 +13,7 @@ defmodule Dos do
       ch = String.to_charlist(leading_zeros)
       temp = Enum.all?(ch, fn(x) -> x == 48 end)
       if temp == true do
-        IO.puts "My coins: "<>"#{hash}"
+        IO.puts "#{input}" <> "     " <> "#{hash}"
       end
   end
 
@@ -21,7 +21,7 @@ defmodule Dos do
   def looping(k) do
       pids = Enum.map(1..100, fn (_) -> spawn(&Dos.repeat/0) end)
       Enum.each pids, fn pid ->
-          rand = :crypto.strong_rand_bytes(6) |> Base.encode64 |> binary_part(0,6)
+          rand = :crypto.strong_rand_bytes(5) |> Base.encode64 |> binary_part(0,5)
           input = Enum.join(["ayushigarg1992", rand], ";")
           send(pid, {input, k})
           
